@@ -16,26 +16,30 @@ from datetime import timedelta
 # from models import Person
 
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
-static_file_dir = os.path.join(os.path.dirname(
-    os.path.realpath(__file__)), '../public/')
+static_file_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../public/')
+
 app = Flask(__name__)
 app.url_map.strict_slashes = False
+
 
 # database condiguration
 db_url = os.getenv("DATABASE_URL")
 if db_url is not None:
-    app.config['SQLALCHEMY_DATABASE_URI'] = db_url.replace(
-        "postgres://", "postgresql://")
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_url.replace("postgres://", "postgresql://")
 else:
     app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////tmp/test.db"
+
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 MIGRATE = Migrate(app, db, compare_type=True)
 db.init_app(app)
+
 flask = JWTManager(app)
 jwt_key = os.getenv("JWT_KEY")
 app.config["SECRET_KEY"] = jwt_key
-app.config["JWT_ACCES_TOKEN_EXPIRES"] = timedelta(seconds=10)
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(seconds=15)
+
+
 # add the admin
 setup_admin(app)
 
