@@ -37,7 +37,7 @@ db.init_app(app)
 flask = JWTManager(app)
 jwt_key = os.getenv("JWT_KEY")
 app.config["SECRET_KEY"] = jwt_key
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(seconds=15)
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=5)
 
 
 # add the admin

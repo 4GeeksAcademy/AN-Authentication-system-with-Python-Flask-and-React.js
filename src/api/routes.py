@@ -81,6 +81,50 @@ def login():
         "username":user.username,
     }}), 200
 
+@api.route('/update-profile', methods=['POST'])
+@jwt_required()
+def updata_profile():
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+
+    if not user:
+        return jsonify({"error":"Usuario no encontrado"}),404
+    data = request.get_json()
+
+    if 'username' in data:
+        user.username = data['username']
+    if 'email' in data:
+        user.email = data['email']
+    if 'phone' in data:
+        user.phone = data['phone']
+    if 'photoUrl' in data:
+        user.photoUrl = data['photoUrl']
+    if 'password' in data and data['password']:
+        user.password = bcrypt.generate_password_hash(data['password']).decode('utf-8')  # Encriptar nueva contraseña
+
+    db.session.commit() 
+
+    return jsonify({"msg": "Perfil actualizado con éxito", "user": user.serialize()}), 200
+
+# Endpoint para eliminar un usuario
+@api.route('/delete-user', methods=['DELETE'])
+@jwt_required()
+def delete_user():
+    user_id = get_jwt_identity()  
+    user = User.query.get(user_id)  
+
+    if not user:
+        return jsonify({"error": "Usuario no encontrado"}), 404 
+
+    try:
+        db.session.delete(user)  
+        db.session.commit()  
+        return jsonify({"msg": "Usuario eliminado con éxito"}), 200  
+    except Exception as e:
+        print(f"Error al eliminar el usuario: {e}")
+        return jsonify({"error": "Error al eliminar el usuario"}), 500  
+
+
 # Endpoint listar usuarios
 @api.route('/private', methods=['GET'])
 @jwt_required()

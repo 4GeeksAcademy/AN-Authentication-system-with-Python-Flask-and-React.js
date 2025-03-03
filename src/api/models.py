@@ -9,6 +9,8 @@ class User(db.Model):
     username: Mapped[str] = mapped_column(String(80), nullable=False)
     email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(String(80),unique=False, nullable=False)
+    phone: Mapped[str] = mapped_column(String(15), nullable = True)
+    photoUrl: Mapped[str] = mapped_column(String(200), nullable= True)
     is_active: Mapped[bool] = mapped_column(Boolean(),default=True)
     
     def __repr__(self):

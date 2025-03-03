@@ -36,7 +36,6 @@ export default function useGlobalReducer() {
 
                 const data = await resp.json();
 
-                console.log("login", data)
                 if (!resp.ok) {
                     throw new Error(data.error || 'Error en el login');
                 }
@@ -112,6 +111,64 @@ export default function useGlobalReducer() {
                     type: 'set_email_error',
                     payload: { emailError: 'Error al verificar el correo electrónico.' },
                 });
+            }
+        },
+        updateProfile: async (userData, password, newPassword) => {
+            try {
+                const resp = await fetch('https://glorious-space-enigma-69rpx495rq9vf54gg-3001.app.github.dev/api/update-profile', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                    body: JSON.stringify({
+                        ...userData,
+                        password,
+                        newPassword,
+                    }),
+                });
+        
+                const data = await resp.json();
+                if (!resp.ok) {
+                    throw new Error(data.error || 'Error al actualizar el perfil');
+                }
+        
+                dispatch({
+                    type: 'update_user',
+                    payload: { user: data.user },
+                });
+                
+                localStorage.setItem('user', JSON.stringify(data.user));
+
+                return { update: true };
+            } catch (error) {
+                dispatch({ type: 'set_error', payload: { error: error.message } });
+                return { update: false };
+            }
+        },
+           deleteUser: async () => {
+            try {
+                const resp = await fetch('https://glorious-space-enigma-69rpx495rq9vf54gg-3001.app.github.dev/api/delete-user', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                });
+
+                const data = await resp.json();
+                if (!resp.ok) {
+                    throw new Error(data.error || 'Error al eliminar el usuario');
+                }
+
+                localStorage.removeItem('user');
+                localStorage.removeItem('token');
+                dispatch({ type: 'logout' });
+
+                return { delete: true };
+            } catch (error) {
+                dispatch({ type: 'set_error', payload: { error: error.message } });
+                return { delete: false };
             }
         },
         logout: () => {

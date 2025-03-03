@@ -1,25 +1,28 @@
 export const initialStore = () =>{
+
+  const user = JSON.parse(localStorage.getItem('user'));
+  const token = localStorage.getItem('token');
   return{
-    user: null,
-    token: null,
+    user: user || null,
+    token: token || null,
     error: null,
     emailError: null,
   };
 };
 
 export default function storeReducer(store, action = {}) {
-  console.log("action recibido:", action);
   switch(action.type){
-    case 'set_user':
-    if(!action.payload || !action.payload.user || !action.payload.token){
-      console.error("invalido para user:", action.payload);
-      return store;
-    }  
+    case 'set_user': 
     return{
         ...store,
         user: action.payload.user,
         token: action.payload.token,
       };
+    case 'update_user':
+      return{
+        ...store,
+        user: action.payload.user,
+      }
     case 'logout':
       return{
         ...store,
