@@ -10,6 +10,7 @@ import { Home } from "./pages/Home";
 import { Signin } from "./pages/signin";
 import { Private } from "./pages/private";
 import { Login } from "./pages/login";
+import { PrivateRoute } from "./components/privateRoute";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -25,7 +26,7 @@ export const router = createBrowserRouter(
       {/* Nested Routes: Defines sub-routes within the BaseHome component. */}
       <Route path="/" element={<Home />} />
       <Route path="/register" element={<Signin />} />  {/* Dynamic route for single items */}
-      <Route path="/private" element={<Private/>}/>
+      <Route path="/private" element={<PrivateRoute element={<Private/>}/>}/>
       <Route path="/login" element={<Login/>}/>
     </Route>
   )
