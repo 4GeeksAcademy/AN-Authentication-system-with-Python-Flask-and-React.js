@@ -12,7 +12,6 @@ export const Signin = () => {
     const { store, actions } = useGlobalReducer();
     const navigate = useNavigate();
 
-    // Función para manejar el registro
     const handleRegister = async (e) => {
         e.preventDefault();
 
@@ -29,9 +28,10 @@ export const Signin = () => {
         try {
             const result = await actions.register({ username, email, password });
             if (result.register) {
-                console.log("Usuario registrado correctamente");
                 navigate("/private");
-            }
+              } else {
+                setError("Registration failed. Please try again."); 
+              }
         } catch (err) {
             setError(err.message);
         }

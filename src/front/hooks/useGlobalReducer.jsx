@@ -1,5 +1,5 @@
 // Import necessary hooks and functions from React.
-import { useContext, useReducer, createContext, useEffect } from "react";
+import { useContext, useReducer, createContext } from "react";
 import storeReducer, { initialStore } from "../store"  // Import the reducer and the initial state.
 
 // Create a context to hold the global state of the application
@@ -12,7 +12,7 @@ export function StoreProvider({ children }) {
     // Initialize reducer with the initial state.
     const [store, dispatch] = useReducer(storeReducer, initialStore());
     // Provide the store and dispatch method to all child components.
-    
+
     return (
         <StoreContext.Provider value={{ store, dispatch }}>
             {children}
@@ -28,27 +28,30 @@ export default function useGlobalReducer() {
             try {
                 const resp = await fetch('https://glorious-space-enigma-69rpx495rq9vf54gg-3001.app.github.dev/api/login', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' 
+                    headers: {
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ email, password }),
                 });
 
                 const data = await resp.json();
+
+                console.log("login", data)
                 if (!resp.ok) {
                     throw new Error(data.error || 'Error en el login');
                 }
 
-                localStorage.setItem('token', data.access_token);
+                localStorage.setItem('token', data.acces_token);
                 localStorage.setItem('user', JSON.stringify(data.user));
                 dispatch({
                     type: 'set_user',
                     payload: {
                         user: data.user,
-                        token: data.access_token,
-                    }
+                        token: data.acces_token,
+                    },
                 });
 
-                return { login: true };
+                return { login: true, user: data.user, token: data.acces_token };
             } catch (error) {
                 dispatch({ type: 'set_error', payload: { error: error.message } });
                 return { login: false };
@@ -67,18 +70,17 @@ export default function useGlobalReducer() {
                 if (!resp.ok) {
                     throw new Error(data.msg || 'Error en el registro');
                 }
-                console.log("Usuario registrado correctamente");
-                const { access_token } = data;
+                const { acces_token } = data;
 
                 dispatch({
                     type: 'set_user',
                     payload: {
-                        user: newUser, // Puedes ajustar esto dependiendo de lo que quieres guardar
-                        token: access_token, // Asegúrate de que esta variable esté disponible
+                        user: newUser,
+                        token: acces_token,
                     }
                 });
 
-                return { register: true };
+                return { register: true, user: newUser, token: acces_token };
             } catch (error) {
                 dispatch({ type: 'set_error', payload: { error: error.message } });
                 return { register: false };

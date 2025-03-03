@@ -41,7 +41,8 @@ def create_user():
             db.session.add(new_user)
             db.session.commit()
             print(f"Usuario creado: {new_user.email}")
-            return jsonify({"msg":"usuario creado con exito","acces_token":"dummy_token"}), 200
+            access_token = create_access_token(identity=str(new_user.id))
+            return jsonify({"msg":"usuario creado con exito","acces_token": access_token}), 200
     except Exception as e:
         print(f"Error al registrar el usuario: {e}")
         return jsonify({"error": "Error al crear el usuario"}), 500
@@ -71,9 +72,14 @@ def login():
         return jsonify({"error":"El email no esta registrado o los datos son incorrectos"}), 401
     # Crear el acces token 
     acces_token = create_access_token(identity=str(user.id))
-    return jsonify({"msg":"Login correcto","acces_token":acces_token}), 200
-
-
+    return jsonify({
+        "msg":"Login correcto",
+        "acces_token":acces_token, 
+        "user":{
+        "id": user.id,
+        "email":user.email,
+        "username":user.username,
+    }}), 200
 
 # Endpoint listar usuarios
 @api.route('/private', methods=['GET'])

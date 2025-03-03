@@ -1,4 +1,4 @@
-export const initialStore=()=>{
+export const initialStore = () =>{
   return{
     user: null,
     token: null,
@@ -8,9 +8,14 @@ export const initialStore=()=>{
 };
 
 export default function storeReducer(store, action = {}) {
+  console.log("action recibido:", action);
   switch(action.type){
     case 'set_user':
-      return{
+    if(!action.payload || !action.payload.user || !action.payload.token){
+      console.error("invalido para user:", action.payload);
+      return store;
+    }  
+    return{
         ...store,
         user: action.payload.user,
         token: action.payload.token,
@@ -33,9 +38,7 @@ export default function storeReducer(store, action = {}) {
         emailError: action.payload.emailError,
       };
     default:
-      console.error("Unkown action type");
       return store;
   }    
 }
-
 

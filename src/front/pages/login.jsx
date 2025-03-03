@@ -11,13 +11,17 @@ export const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    
     const result = await actions.login(email, password);
+  
+    // Verifica si el login fue exitoso
     if (result.login) {
-      navigate("/private");
+      navigate("/private"); 
     } else {
-      setError("Login failed. Please check your credentials.");
+      setError("Login failed. Please check your credentials."); 
     }
   };
+  
 
   return (
     <div className="container">
